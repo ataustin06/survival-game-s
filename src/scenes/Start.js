@@ -536,9 +536,9 @@ addFoodToBasket (avatar, amount)
 
     const baselineY = 170;
 
-    this.addQuestionObject(this.createStaticHumanAvatar(230, baselineY, 'Person A', 1.12, 0xcc3333, personADisplayFood));
-    this.addQuestionObject(this.createStaticHumanAvatar(620, baselineY, 'Person B', 1.00, 0x3366cc, personBDisplayFood));
-    this.addQuestionObject(this.createStaticHumanAvatar(1000, baselineY, 'Person C', 0.88, 0x339966, personCDisplayFood));
+    this.addQuestionObject(this.createStaticHumanAvatar(230, baselineY, 'Person A', 1.12, 0xcc3333, 0));
+this.addQuestionObject(this.createStaticHumanAvatar(620, baselineY, 'Person B', 1.00, 0x3366cc, 0));
+this.addQuestionObject(this.createStaticHumanAvatar(1000, baselineY, 'Person C', 0.88, 0x339966, 0));
 
     this.blanket = this.add.rectangle(640, 425, 420, 115, 0xd8ecff);
     this.blanket.setStrokeStyle(4, 0x335577);
