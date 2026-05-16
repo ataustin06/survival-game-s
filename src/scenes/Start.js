@@ -2020,11 +2020,6 @@ const personCDisplayFood = fixedFood.personC;
     this.createAnswerButton(640, 560, answers[1], 'cooperationCompetitionChoice');
 }
 
-showNextSurveyQuestion ()
-{
-    this.showFinalGameScreen();
-}
-
 showFinalGameScreen ()
 {
     this.clearQuestionScreen();
@@ -2033,98 +2028,99 @@ showFinalGameScreen ()
 
     this.gameData.completionCode = randomCode;
 
-    this.addQuestionObject(this.add.rectangle(640, 360, 1000, 520, 0xffffff))
-        .setStrokeStyle(4, 0x000000);
+    this.addQuestionObject(
+        this.add.rectangle(640, 360, 1000, 520, 0xffffff)
+            .setStrokeStyle(4, 0x000000)
+    );
 
-    this.addQuestionObject(this.add.text(
+    this.addQuestionObject(
+        this.add.text(
+            640,
+            250,
+            'Thank you for playing the survival game.\nYour final score is 9/10. Good job!\n\nCopy the random code below and enter it back into the survey to receive credit for completing the game.\n\nClick the button below to copy your code.',
+            {
+                fontSize: '27px',
+                color: '#000000',
+                align: 'center',
+                wordWrap: { width: 850 },
+                lineSpacing: 8
+            }
+        ).setOrigin(0.5)
+    );
+
+    // Copy button box
+    const copyButtonBox = this.add.rectangle(
         640,
-        250,
-        'Thank you for playing the survival game.\nYour final score is 9/10. Good job!\n\nCopy the random code below and enter it back into the survey to get credit for completing the game.\n\nThank you for your participation!',
+        515,
+        220,
+        65,
+        0xdddddd
+    );
+
+    copyButtonBox.setStrokeStyle(3, 0x000000);
+    copyButtonBox.setInteractive({ useHandCursor: true });
+
+    this.addQuestionObject(copyButtonBox);
+
+    // Copy button text
+    const copyButtonText = this.add.text(
+        640,
+        515,
+        'Copy code',
         {
-            fontSize: '28px',
+            fontSize: '26px',
             color: '#000000',
-            align: 'center',
-            wordWrap: { width: 850 },
-            lineSpacing: 8
-        }
-    ).setOrigin(0.5));
-
-    this.addQuestionObject(this.add.rectangle(640, 520, 360, 80, 0xeeeeee))
-        .setStrokeStyle(3, 0x000000);
-
-    const copiedText = this.add.text(
-        640,
-        585,
-        'Click the code to copy it',
-        {
-            fontSize: '22px',
-            color: '#444444',
             align: 'center'
         }
     ).setOrigin(0.5);
 
-    this.addQuestionObject(copiedText);
+    copyButtonText.setInteractive({ useHandCursor: true });
 
+    this.addQuestionObject(copyButtonText);
+
+    // Code text underneath
     const codeText = this.add.text(
         640,
-        520,
-        randomCode,
+        590,
+        `Code: ${randomCode}`,
         {
-            fontSize: '36px',
-            color: '#000000',
-            align: 'center',
-            backgroundColor: '#ffffff',
-            padding: {
-                left: 12,
-                right: 12,
-                top: 8,
-                bottom: 8
-            }
-        }
-    ).setOrigin(0.5);
-
-codeText.setInteractive({ useHandCursor: true });
-
-codeText.on('pointerdown', () => {
-
-    navigator.clipboard.writeText(randomCode);
-
-    copiedText.setText('Code copied to clipboard!');
-});
-
-this.addQuestionObject(codeText);
-
-    this.gameData.completionCode = randomCode;
-
-    this.addQuestionObject(this.add.rectangle(640, 360, 1000, 520, 0xffffff))
-        .setStrokeStyle(4, 0x000000);
-
-    this.addQuestionObject(this.add.text(
-        640,
-        250,
-        'Thank you for playing the survival game.\nYour final score is 9/10. Good job!\n\nCopy the random code below and enter it back into the survey to get credit for completing the game.\n\nThank you for your participation!',
-        {
-            fontSize: '28px',
-            color: '#000000',
-            align: 'center',
-            wordWrap: { width: 850 },
-            lineSpacing: 8
-        }
-    ).setOrigin(0.5));
-
-    this.addQuestionObject(this.add.rectangle(640, 520, 360, 80, 0xeeeeee))
-        .setStrokeStyle(3, 0x000000);
-
-    this.addQuestionObject(this.add.text(
-        640,
-        520,
-        randomCode,
-        {
-            fontSize: '36px',
+            fontSize: '32px',
             color: '#000000',
             align: 'center'
         }
-    ).setOrigin(0.5));
+    ).setOrigin(0.5);
+
+    this.addQuestionObject(codeText);
+
+    const copyCode = async () => {
+
+        try
+        {
+            await navigator.clipboard.writeText(randomCode);
+
+            copyButtonText.setText('Copied!');
+        }
+        catch (err)
+        {
+            const tempInput = document.createElement('input');
+
+            tempInput.value = randomCode;
+
+            document.body.appendChild(tempInput);
+
+            tempInput.select();
+            tempInput.setSelectionRange(0, 99999);
+
+            document.execCommand('copy');
+
+            document.body.removeChild(tempInput);
+
+            copyButtonText.setText('Copied!');
+        }
+    };
+
+    copyButtonBox.on('pointerdown', copyCode);
+    copyButtonText.on('pointerdown', copyCode);
 
     console.log('FINAL GAME DATA:', this.gameData);
 }
@@ -2227,7 +2223,7 @@ else if (variableName === 'personDEmpathyChoice')
 }
 else if (variableName === 'cooperationCompetitionChoice')
 {
-    this.showNextTaskButtonAt(640, 685, () => this.showNextSurveyQuestion());
+    this.showNextTaskButtonAt(640, 685, () => this.showFinalGameScreen());
 }
         else
         {
